@@ -2,4 +2,6 @@
 // $Id$
 
 function icqfield_field_info() {
+  return array(
+  );
 }

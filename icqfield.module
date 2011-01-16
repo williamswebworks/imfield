@@ -9,28 +9,17 @@ function icqfield_field_info() {
     'icq' => array(
       'label' => t('ICQ Field'),
       'description' => t('This field stores an ICQ number'),
-      'default_widget' => 'icq',
+      'default_widget' => 'icq_textfield',
       'default_formatter' => 'icq_onlinestatus',
     ),
   );
 }
 
 /**
- * Implements hook_field_validate().
- */
-function icqfield_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
-  foreach ($items as $delta => $item) {
-    if ($item['value'] != '') {
-      // XXX
-    }
-  }
-}
-
-/**
  * Implements hook_field_is_empty().
  */
 function icqfield_field_is_empty($item, $field) {
-  return !isset($item['value']) || trim($item['value']) === '';
+  return empty($item['value']);
 }
 
 /**
@@ -58,8 +47,12 @@ function icqfield_field_formatter_view($entity_type, $entity, $field, $instance,
   switch ($display['type']) {
     case 'icq_onlinestatus':
       foreach ($items as $delta => $item) {
-        $output = $item['value']; // XXX
-        $element[$delta] = array('#markup' => $item['value']);
+        $output = $item['value'];
+        if($output) {
+          // TODO: Make themable
+          $output = "<img src=\"http://status.icq.com/online.gif?icq={$output}&img=5\" />" . $output;
+        }
+        $element[$delta] = array('#markup' => $output);
       }
       break;
     
@@ -78,7 +71,7 @@ function icqfield_field_formatter_view($entity_type, $entity, $field, $instance,
  */
 function icqfield_field_widget_info() {
   return array(
-    'icq' => array(
+    'icq_textfield' => array(
       'label' => t('Text field'),
       'field types' => array('icq'),
     ),
@@ -102,10 +95,29 @@ function icqfield_field_widget_form(&$form, &$form_state, $field, $instance, $la
 }
 
 /**
+ * Implements hook_field_validate().
+ */
+function icqfield_field_validaze($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  // TODO: Find out what makes a valid ICQ number.
+  // Also look at icqfield_field_widget_validate
+}
+
+/**
  * FAPI validation of an individual icq element.
  */
 function icqfield_field_widget_validate($element, &$form_state) {
-  // XXX
+  $value = $element['#value'];
+  
+  if (!empty($value)) {
+    $value = trim($value);
+    
+    if(!preg_match('/^[0-9]{1,10}$/', $value)) {
+      form_error($element, t('The ICQ number is not valid.'));
+    }
+    else {
+      form_set_value($element, $value, $form_state);
+    }
+  }
 }
 
 /**

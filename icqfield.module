@@ -100,3 +100,17 @@ function icqfield_field_widget_form(&$form, &$form_state, $field, $instance, $la
   
   return array('value' => $element);
 }
+
+/**
+ * FAPI validation of an individual icq element.
+ */
+function icqfield_field_widget_validate($element, &$form_state) {
+  // XXX
+}
+
+/**
+ * Implements hook_field_widget_error().
+ */
+function icqfield_field_widget_error($element, $error, $form, &$form_state) {
+  form_error($element['value'], $error['message']);
+}

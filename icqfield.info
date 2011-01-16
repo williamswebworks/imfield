@@ -1,0 +1,5 @@
+; $Id$
+name = ICQ Field
+description = An ICQ field that integrates with the field API
+core  = 7.x
+dependencies[] = number

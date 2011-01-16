@@ -1,0 +1,18 @@
+<?php
+// $Id$
+
+/**
+ * Implements hook_field_schema().
+ */
+function icqfield_field_schema($field) {
+  return array(
+    'columns' => array(
+      'value' => array(
+        'type' => 'varchar',
+        'size' => 'normal',
+        'not null' => FALSE,
+        'length' => 10,
+      ),
+    ),
+  );
+}

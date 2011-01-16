@@ -1,7 +1,102 @@
 <?php
 // $Id$
 
+/**
+ * Implements hook_field_info().
+ */
 function icqfield_field_info() {
   return array(
+    'icq' => array(
+      'label' => t('ICQ Field'),
+      'description' => t('This field stores an ICQ number'),
+      'default_widget' => 'icq',
+      'default_formatter' => 'icq_onlinestatus',
+    ),
   );
+}
+
+/**
+ * Implements hook_field_validate().
+ */
+function icqfield_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  foreach ($items as $delta => $item) {
+    if ($item['value'] != '') {
+      // XXX
+    }
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function icqfield_field_is_empty($item, $field) {
+  return !isset($item['value']) || trim($item['value']) === '';
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function icqfield_field_formatter_info() {
+  return array(
+    'icq_onlinestatus' => array(
+      'label' => t('Onlinestatus'),
+      'field types' => array('icq'),
+    ),
+    'icq_unformatted' => array(
+      'label' => t('Unformatted'),
+      'field types' => array('icq'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function icqfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  
+  switch ($display['type']) {
+    case 'icq_onlinestatus':
+      foreach ($items as $delta => $item) {
+        $output = $item['value']; // XXX
+        $element[$delta] = array('#markup' => $item['value']);
+      }
+      break;
+    
+    case 'icq_unformatted':
+      foreach ($items as $delta => $item) {
+        $element[$delta] = array('#markup' => $item['value']);
+      }
+      break;
+  }
+  
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function icqfield_field_widget_info() {
+  return array(
+    'icq' => array(
+      'label' => t('Text field'),
+      'field types' => array('icq'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function icqfield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $value = isset($items[$delta]['value']) ? $items[$delta]['value'] : '';
+  
+  $element += array(
+    '#type' => 'textfield',
+    '#default_value' => $value,
+  );
+  
+  $element['#element_validate'][] = 'icqfield_field_widget_validate';
+  
+  return array('value' => $element);
 }

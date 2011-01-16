@@ -111,7 +111,7 @@ function icqfield_field_widget_validate($element, &$form_state) {
   if (!empty($value)) {
     $value = trim($value);
     
-    if(!preg_match('/^[0-9]{1,10}$/', $value)) {
+    if (!preg_match('/^[0-9]{1,10}$/', $value)) {
       form_error($element, t('The ICQ number is not valid.'));
     }
     else {

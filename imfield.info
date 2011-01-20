@@ -1,0 +1,6 @@
+; $Id$
+name = IM Field
+description = Add fields for instant messaging contact information with the field API
+core  = 7.x
+dependencies[] = number
+package = Fields

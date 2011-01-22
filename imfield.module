@@ -160,12 +160,9 @@ function imfield_field_widget_validate($element, &$form_state) {
       // 5 to 10 numbers, ignore spaces and dashes.
       // Based on experiments with ICQ APIs.
       // -- It would be better, if there was an official reference. XXX
-      $cleaned = preg_replace('/\s|-/', '', $value);
-      if(!preg_match('/^[0-9]{5,10}$/', $cleaned)) {
+      $value = preg_replace('/\s|-/', '', $value);
+      if(!preg_match('/^[0-9]{5,10}$/', $value)) {
         $error = 'The ICQ number is not valid.';
-      }
-      else {
-        $value = $cleaned;
       }
       break;
     

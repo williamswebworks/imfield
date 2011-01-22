@@ -25,7 +25,7 @@ function imfield_field_info() {
  * Implements hook_field_is_empty().
  */
 function imfield_field_is_empty($item, $field) {
-  return empty($item['value']) && $item['value'] !== '0';
+  return !isset($item['value']) || $item['value'] === '';
 }
 
 /**
@@ -160,6 +160,9 @@ function imfield_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 function imfield_field_widget_validate($element, &$form_state) {
   // Trim value
   $value = trim($element['#value']);
+  if($value === '') {
+    return;
+  }
   
   // Prepare validation
   $field = field_widget_field($element, $form_state);

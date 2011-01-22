@@ -46,32 +46,69 @@ function imfield_field_formatter_info() {
 
 /**
  * Implements hook_field_formatter_view().
- *
- * TODO:
- * Make themable
  */
 function imfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   
   foreach ($items as $delta => $item) {
-    $output = check_plain($item['value']);
+    // Gather data
+    $data = array(
+      'account' => $item['value'],
+      'url' => imfield_statusurl($field['type'], $item['value']),
+      'element' => $item,
+      'field' => $instance,
+    );
     
-    if($display['type'] == 'imfield_onlinestatus') {
-      switch($field['type']) {
-        case 'imfield_icq':
-          $output = "<img src=\"http://status.icq.com/online.gif?icq={$output}&img=5\" />" . $output;
-          break;
-        
-        case 'imfield_skype':
-          $output = "<img src=\"http://mystatus.skype.com/smallicon/{$output}\" />" . $output;
-          break;
-      }
-    }
-    
-    $element[$delta] = array('#markup' => $output);
+    // Go and theme it
+    $element[$delta] = array(
+      '#markup' => theme('imfield_formatter', $data),
+    );
   }
   
   return $element;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function imfield_theme($existing, $type, $theme, $path) {
+  return array(
+    'imfield_formatter' => array(
+      'variables' => array(
+        'account' => NULL,
+        'url' => NULL,
+        'element' => NULL,
+        'field' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * Theme function for imfield_formatter.
+ */
+function theme_imfield_formatter($vars) {
+  $image = theme_image(array(
+    'path' => $vars['url'],
+    'title' => t('Onlinestatus'),
+    'attributes' => array(),
+  ));
+  return $image . '&nbsp;' . check_plain($vars['account']);
+}
+
+/**
+ * Get the URL of an account's status indicator image.
+ */
+function imfield_statusurl($type, $username) {
+  switch($type) {
+    case 'icq':
+    case 'imfield_icq':
+      return 'http://status.icq.com/online.gif?icq=' . $username . '&img=5';
+    
+    case 'skype':
+    case 'imfield_skype':
+      return 'http://mystatus.skype.com/smallicon/' . $username . '?dontcache';
+  }
 }
 
 /**
@@ -110,12 +147,11 @@ function imfield_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 function imfield_field_widget_validate($element, &$form_state) {
   // Trim value
   $value = trim($element['#value']);
-  form_set_value($element, $value, $form_state);
   
   // Prepare validation
   $field = field_widget_field($element, $form_state);
   $instance = field_widget_instance($element, $form_state);
-  $error = false;
+  $error = FALSE;
   
   // Validate
   switch($field['type']) {
@@ -124,9 +160,12 @@ function imfield_field_widget_validate($element, &$form_state) {
       // 5 to 10 numbers, ignore spaces and dashes.
       // Based on experiments with ICQ Apis.
       // -- It would be better, if there was an official reference. XXX
-      if(!preg_match('/^[0-9]{5,10}$/', $value)) {
+      if(!preg_match('/^([0-9]-\s){5,10}$/', $value, $result)) {
         $error = 'The ICQ number is not valid.';
       }
+      /* else {
+        var_dump($result);
+      } */
       break;
     
     case 'imfield_skype':
@@ -145,6 +184,7 @@ function imfield_field_widget_validate($element, &$form_state) {
   if($error) {
     form_error($element, $error);
   }
+  form_set_value($element, $value, $form_state);
 }
 
 /**

@@ -161,6 +161,7 @@ function imfield_field_widget_validate($element, &$form_state) {
   // Trim value
   $value = trim($element['#value']);
   if($value === '') {
+    form_set_value($element, '', $form_state);
     return;
   }
   

@@ -2,6 +2,11 @@
 // $Id$
 
 /**
+ * @file
+ * Creates a database column when imfield is installed.
+ */
+
+/**
  * Implements hook_field_schema().
  */
 function imfield_field_schema($field) {

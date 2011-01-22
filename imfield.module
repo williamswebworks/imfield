@@ -141,8 +141,6 @@ function imfield_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 
 /**
  * FAPI validation of an individual icq element.
- *
- * TODO: Find reference for ICQ number validation
  */
 function imfield_field_widget_validate($element, &$form_state) {
   // Trim value

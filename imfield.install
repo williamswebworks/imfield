@@ -11,7 +11,7 @@ function imfield_field_schema($field) {
         'type' => 'varchar',
         'size' => 'normal',
         'not null' => FALSE,
-        'length' => 10,
+        'length' => 32,
       ),
     ),
   );

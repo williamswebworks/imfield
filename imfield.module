@@ -46,6 +46,9 @@ function imfield_field_formatter_info() {
 
 /**
  * Implements hook_field_formatter_view().
+ *
+ * TODO:
+ * Make themable
  */
 function imfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
@@ -60,6 +63,7 @@ function imfield_field_formatter_view($entity_type, $entity, $field, $instance, 
           break;
         
         case 'imfield_skype':
+          $output = "<img src=\"http://mystatus.skype.com/smallicon/{$output}\" />" . $output;
           break;
       }
     }

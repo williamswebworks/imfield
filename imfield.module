@@ -122,6 +122,7 @@ function imfield_field_widget_validate($element, &$form_state) {
   // Prepare validation
   $field = field_widget_field($element, $form_state);
   $instance = field_widget_instance($element, $form_state);
+  $error = false;
   
   // Validate
   switch($field['type']) {

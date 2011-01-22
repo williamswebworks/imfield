@@ -127,13 +127,22 @@ function imfield_field_widget_validate($element, &$form_state) {
   // Validate
   switch($field['type']) {
     case 'imfield_icq':
+      // ICQ:
+      // 5 to 10 numbers, ignore spaces and dashes.
+      // Based on experiments with ICQ Apis.
+      // -- It would be better, if there was an official reference. XXX
       if(!preg_match('/^[0-9]{5,10}$/', $value)) {
         $error = 'The ICQ number is not valid.';
       }
       break;
     
     case 'imfield_skype':
-      if(!preg_match('/^$/', $value)) { // XXX
+      // Skype:
+      // Your Skype Name is your unique username for Skype.
+      // It must be between 6-32 characters, start with a letter and contain
+      // only letters and numbers (no spaces or special characters).
+      // -- from Skype registration form
+      if(!preg_match('/^[A-Za-z][A-Za-z0-9]{5,31}$/', $value)) {
         $error = 'The Skype account name is not valid.';
       }
       break;

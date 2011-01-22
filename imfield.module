@@ -50,26 +50,21 @@ function imfield_field_formatter_info() {
 function imfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   
-  // XXX Refractor foreach <-> switch
-  switch ($display['type']) {
-    case 'imfield_onlinestatus':
-      foreach ($items as $delta => $item) {
-        $output = $item['value'];
-        if($output) {
-          // TODO: Make themable
-          // TODO: Implement skype / icq
-          $output = "<img src=\"http://status.icq.com/online.gif?icq={$output}&img=5\" />" . $output;
-          $output .= '<pre>' . print_r($field, true) . '</pre>';
-        }
-        $element[$delta] = array('#markup' => $output);
-      }
-      break;
+  foreach ($items as $delta => $item) {
+    $output = check_plain($item['value']);
     
-    case 'imfield_unformatted':
-      foreach ($items as $delta => $item) {
-        $element[$delta] = array('#markup' => check_plain($item['value']));
+    if($display['type'] == 'imfield_onlinestatus') {
+      switch($field['type']) {
+        case 'imfield_icq':
+          $output = "<img src=\"http://status.icq.com/online.gif?icq={$output}&img=5\" />" . $output;
+          break;
+        
+        case 'imfield_skype':
+          break;
       }
-      break;
+    }
+    
+    $element[$delta] = array('#markup' => $output);
   }
   
   return $element;
@@ -81,7 +76,7 @@ function imfield_field_formatter_view($entity_type, $entity, $field, $instance, 
 function imfield_field_widget_info() {
   return array(
     'imfield_textfield' => array(
-      'label' => t('Text field'),
+      'label' => t('Textfield'),
       'field types' => array('imfield_icq', 'imfield_skype'),
     ),
   );

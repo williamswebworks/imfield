@@ -115,7 +115,7 @@ function theme_imfield_unformatted($vars) {
  * Get the URL of an account's status indicator image.
  */
 function imfield_statusurl($type, $username) {
-  switch($type) {
+  switch ($type) {
     case 'icq':
     case 'imfield_icq':
       return 'http://status.icq.com/online.gif?icq=' . $username . '&img=5';
@@ -160,7 +160,7 @@ function imfield_field_widget_form(&$form, &$form_state, $field, $instance, $lan
 function imfield_field_widget_validate($element, &$form_state) {
   // Trim value
   $value = trim($element['#value']);
-  if($value === '') {
+  if ($value === '') {
     form_set_value($element, '', $form_state);
     return;
   }
@@ -171,14 +171,14 @@ function imfield_field_widget_validate($element, &$form_state) {
   $error = FALSE;
   
   // Validate
-  switch($field['type']) {
+  switch ($field['type']) {
     case 'imfield_icq':
       // ICQ:
       // 5 to 10 numbers, ignore spaces and dashes.
       // Based on experiments with ICQ APIs.
       // -- It would be better, if there was an official reference. XXX
       $value = preg_replace('/\s|-/', '', $value);
-      if(!preg_match('/^[0-9]{5,10}$/', $value)) {
+      if (!preg_match('/^[0-9]{5,10}$/', $value)) {
         $error = 'The ICQ number is not valid.';
       }
       break;
@@ -189,14 +189,14 @@ function imfield_field_widget_validate($element, &$form_state) {
       // It must be between 6-32 characters, start with a letter and contain
       // only letters and numbers (no spaces or special characters).
       // -- from Skype registration form
-      if(!preg_match('/^[A-Za-z][A-Za-z0-9]{5,31}$/', $value)) {
+      if (!preg_match('/^[A-Za-z][A-Za-z0-9]{5,31}$/', $value)) {
         $error = 'The Skype account name is not valid.';
       }
       break;
   }
   
   // Display error
-  if($error) {
+  if ($error) {
     form_error($element, $error);
   }
   form_set_value($element, $value, $form_state);

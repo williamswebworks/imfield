@@ -135,6 +135,7 @@ function imfield_field_widget_validate($element, &$form_state) {
       if(!preg_match('/^$/', $value)) { // XXX
         $error = 'The Skype account name is not valid.';
       }
+      break;
   }
   
   // Display error

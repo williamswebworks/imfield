@@ -61,7 +61,7 @@ function imfield_field_formatter_view($entity_type, $entity, $field, $instance, 
     
     // Go and theme it
     $element[$delta] = array(
-      '#markup' => theme('imfield_formatter', $data),
+      '#markup' => theme($display['type'], $data),
     );
   }
   
@@ -73,7 +73,15 @@ function imfield_field_formatter_view($entity_type, $entity, $field, $instance, 
  */
 function imfield_theme($existing, $type, $theme, $path) {
   return array(
-    'imfield_formatter' => array(
+    'imfield_onlinestatus' => array(
+      'variables' => array(
+        'account' => NULL,
+        'url' => NULL,
+        'element' => NULL,
+        'field' => NULL,
+      ),
+    ),
+    'imfield_unformatted' => array(
       'variables' => array(
         'account' => NULL,
         'url' => NULL,
@@ -85,15 +93,22 @@ function imfield_theme($existing, $type, $theme, $path) {
 }
 
 /**
- * Theme function for imfield_formatter.
+ * Theme function for imfield_onlinestatus.
  */
-function theme_imfield_formatter($vars) {
+function theme_imfield_onlinestatus($vars) {
   $image = theme_image(array(
     'path' => $vars['url'],
     'title' => t('Onlinestatus'),
     'attributes' => array(),
   ));
   return $image . '&nbsp;' . check_plain($vars['account']);
+}
+
+/**
+ * Theme function for imfield_unformatted.
+ */
+function theme_imfield_unformatted($vars) {
+  return check_plain($vars['account']);
 }
 
 /**

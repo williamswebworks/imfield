@@ -179,7 +179,7 @@ function imfield_field_widget_validate($element, &$form_state) {
       // -- It would be better, if there was an official reference. XXX
       $value = preg_replace('/\s|-/', '', $value);
       if (!preg_match('/^[0-9]{5,10}$/', $value)) {
-        $error = 'The ICQ number is not valid.';
+        $error = t('The ICQ number is not valid.');
       }
       break;
     
@@ -190,14 +190,14 @@ function imfield_field_widget_validate($element, &$form_state) {
       // only letters and numbers (no spaces or special characters).
       // -- from Skype registration form
       if (!preg_match('/^[A-Za-z][A-Za-z0-9]{5,31}$/', $value)) {
-        $error = 'The Skype account name is not valid.';
+        $error = t('The Skype account name is not valid.');
       }
       break;
   }
   
   // Display error
   if ($error) {
-    form_error($element, $error);
+    form_error($element, check_plain($error));
   }
   form_set_value($element, $value, $form_state);
 }

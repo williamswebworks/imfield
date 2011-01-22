@@ -6,11 +6,17 @@
  */
 function imfield_field_info() {
   return array(
-    'icq' => array(
+    'imfield_icq' => array(
       'label' => t('ICQ Field'),
       'description' => t('This field stores an ICQ number'),
-      'default_widget' => 'icq_textfield',
-      'default_formatter' => 'icq_onlinestatus',
+      'default_widget' => 'imfield_textfield',
+      'default_formatter' => 'imfield_onlinestatus',
+    ),
+    'imfield_skype' => array(
+      'label' => t('Skype Field'),
+      'description' => t('This field stores a Skype account name'),
+      'default_widget' => 'imfield_textfield',
+      'default_formatter' => 'imfield_onlinestatus',
     ),
   );
 }
@@ -19,7 +25,7 @@ function imfield_field_info() {
  * Implements hook_field_is_empty().
  */
 function imfield_field_is_empty($item, $field) {
-  return empty($item['value']);
+  return empty($item['value']) && $item['value'] !== '0';
 }
 
 /**
@@ -27,13 +33,13 @@ function imfield_field_is_empty($item, $field) {
  */
 function imfield_field_formatter_info() {
   return array(
-    'icq_onlinestatus' => array(
+    'imfield_onlinestatus' => array(
       'label' => t('Onlinestatus'),
-      'field types' => array('icq'),
+      'field types' => array('imfield_icq', 'imfield_skype'),
     ),
-    'icq_unformatted' => array(
+    'imfield_unformatted' => array(
       'label' => t('Unformatted'),
-      'field types' => array('icq'),
+      'field types' => array('imfield_icq', 'imfield_skype'),
     ),
   );
 }
@@ -44,21 +50,24 @@ function imfield_field_formatter_info() {
 function imfield_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
   
+  // XXX Refractor foreach <-> switch
   switch ($display['type']) {
-    case 'icq_onlinestatus':
+    case 'imfield_onlinestatus':
       foreach ($items as $delta => $item) {
         $output = $item['value'];
         if($output) {
           // TODO: Make themable
+          // TODO: Implement skype / icq
           $output = "<img src=\"http://status.icq.com/online.gif?icq={$output}&img=5\" />" . $output;
+          $output .= '<pre>' . print_r($field, true) . '</pre>';
         }
         $element[$delta] = array('#markup' => $output);
       }
       break;
     
-    case 'icq_unformatted':
+    case 'imfield_unformatted':
       foreach ($items as $delta => $item) {
-        $element[$delta] = array('#markup' => $item['value']);
+        $element[$delta] = array('#markup' => check_plain($item['value']));
       }
       break;
   }
@@ -71,9 +80,9 @@ function imfield_field_formatter_view($entity_type, $entity, $field, $instance, 
  */
 function imfield_field_widget_info() {
   return array(
-    'icq_textfield' => array(
+    'imfield_textfield' => array(
       'label' => t('Text field'),
-      'field types' => array('icq'),
+      'field types' => array('imfield_icq', 'imfield_skype'),
     ),
   );
 }
@@ -89,7 +98,7 @@ function imfield_field_widget_form(&$form, &$form_state, $field, $instance, $lan
     '#default_value' => $value,
   );
   
-  $element['#element_validate'][] = 'icqfield_field_widget_validate';
+  $element['#element_validate'][] = 'imfield_field_widget_validate';
   
   return array('value' => $element);
 }
@@ -98,8 +107,6 @@ function imfield_field_widget_form(&$form, &$form_state, $field, $instance, $lan
  * Implements hook_field_validate().
  */
 function imfield_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
-  // TODO: Find out what makes a valid ICQ number.
-  // Also look at icqfield_field_widget_validate
 }
 
 /**
@@ -107,6 +114,8 @@ function imfield_field_validate($entity_type, $entity, $field, $instance, $langc
  */
 function imfield_field_widget_validate($element, &$form_state) {
   $value = $element['#value'];
+  
+  // XXX Validate ICQ and Skype
   
   if (!empty($value)) {
     $value = trim($value);
